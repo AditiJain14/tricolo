@@ -1,0 +1,43 @@
+train: True # change
+batch_size: 128 # change
+epochs: 30
+eval_every_n_epochs: 2
+log_every_n_steps: 200
+learning_rate: 4e-4 # change 8e-4
+weight_decay: 1e-6
+fp16_precision: True
+dset: shapenet
+CLIP: False
+info: "../data/text2shape-data"
+
+model:
+  out_dim: 512
+  bert_base_model: "BiGRU"
+  sparse_model: False
+  use_voxel: False
+  tri_modal: False
+  num_images: 12
+  image_cnn: 'resnet18'
+  pretraining: True
+
+dataset:
+  num_workers: 4 # change
+  train_json_file: "../data/train_map.jsonl"
+  val_json_file: "../data/val_map.jsonl"
+  test_json_file: "../data/test_map.jsonl"
+  voxel_root_dir: '../data/nrrd_256_filter_div_64_solid'
+  image_size: 128
+  voxel_size: 64
+  transform: 0 # the probability to do data augmentation, 0: no augmentation
+
+
+loss:
+  type: ntxent # ntxent, triplet 
+  ntxent:
+    temperature: 0.1
+    use_cosine_similarity: True
+    alpha_weight: 0.25
+  triplet:
+    margin: 0.025
+  
+
