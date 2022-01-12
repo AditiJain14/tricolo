@@ -10,7 +10,7 @@ from tricolo.dataloader.dataset_wrapper import DataSetWrapper
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", default='tricolo/configs/retrieval_shapenet.yaml', type=str, help="Path to config file")
-parser.add_argument("--expr_id", dest='expr_id', default=-1, type=int, help="specify which experiment you want to run")
+parser.add_argument("--expr_id", dest='expr_id', default=-1, type=str, help="specify which experiment you want to run")
 args = parser.parse_args()
 
 def _merge_a_into_b(a, b):
@@ -57,7 +57,7 @@ def main(setting=None):
     print(eval(config['learning_rate']))
 
     dataset = DataSetWrapper(config['dset'], config['batch_size'], config['train'], **config['dataset'])
-    simclr = SimCLR(dataset, config, args.expr_id, args.gpu_id)
+    simclr = SimCLR(dataset, config, args.expr_id)
 
     simclr.train()
 

@@ -9,3 +9,14 @@ __pycache__/
 .DS_Store
 
 logs/
+
+# Virtual environment
+env/
+test/
+tricolo/pyvenv.cfg
+
+include/
+bin/
+lib/
+lib64/
+share/

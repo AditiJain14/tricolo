@@ -17,11 +17,18 @@ We achieved SoTA on text to shape retrieval task and we hope our results will en
 
 ### Setup
 
+To install basic packages for this repo, run the following command.
+
 ```
 git clone git@github.com:3dlg-hcvc/tricolo.git
 cd tricolo
 python -m pip install -r requirements.txt
 ```
+
+To install CLIP, please refer to [CLIP[Github]](https://github.com/openai/CLIP)
+
+To install Pytorch3d, please follow instructions in [pytorch3d/INSTALL.md](https://github.com/facebookresearch/pytorch3d/blob/main/INSTALL.md)
+
 
 ## Dataset
 
