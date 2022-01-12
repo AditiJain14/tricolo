@@ -23,7 +23,7 @@ for GPU in 0 1 2 3
     do
         echo $JOB_ID $GPU
         SETTINGS_ID=$((JOB_ID*4+GPU))
-        CUDA_VISIBLE_DEVICES=$GPU python run_retrieval.py --config_file t3ds/configs/retrieval_shapenet.yaml --param_id X  --gpu_id $GPU & # X is the setting's number
+        CUDA_VISIBLE_DEVICES=$GPU python run_retrieval.py --config_file t3ds/configs/retrieval_shapenet.yaml --expr_id v64i128b128  --gpu_id $GPU & 
         pids="$pids $!"
     done
 wait $pids

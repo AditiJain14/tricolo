@@ -36,7 +36,7 @@ class SimCLR(object):
         if self.config['train']:
             log_dir = 'logs/retrieval/' + datetime.datetime.now().strftime("%b%d_%H-%M-%S")
             if param_id != -1:
-                log_dir += "_Cfg"+str(param_id)
+                log_dir += "_CFG"+str(param_id)
             if gpu_id != -1:
                 log_dir += "_GPU"+str(gpu_id)
             print(f"log directory is at {log_dir}\n")

@@ -10,8 +10,7 @@ from tricolo.dataloader.dataset_wrapper import DataSetWrapper
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--config_file", default='tricolo/configs/retrieval_shapenet.yaml', type=str, help="Path to config file")
-parser.add_argument("--param_id", dest='param_id', default=-1, type=int, help="search parameters on cedar")
-parser.add_argument("--gpu_id", dest='gpu_id', default=-1, type=int, help="search parameters on cedar")
+parser.add_argument("--expr_id", dest='expr_id', default=-1, type=int, help="specify which experiment you want to run")
 args = parser.parse_args()
 
 def _merge_a_into_b(a, b):
@@ -58,15 +57,15 @@ def main(setting=None):
     print(eval(config['learning_rate']))
 
     dataset = DataSetWrapper(config['dset'], config['batch_size'], config['train'], **config['dataset'])
-    simclr = SimCLR(dataset, config, args.param_id, args.gpu_id)
+    simclr = SimCLR(dataset, config, args.expr_id, args.gpu_id)
 
     simclr.train()
 
 if __name__ == "__main__":
     settings = []
 
-    ################### trimodal ablations   ###############
-    if args.param_id == 0:
+
+    if args.expr_id == "v64i128b128":
         setting = {}
         setting['batch_size'] = 128
         setting['model'] = {'use_voxel': True,
@@ -75,38 +74,25 @@ if __name__ == "__main__":
                             'image_cnn': 'resnet18',
                             'pretraining': True}
         setting['dataset'] = {'image_size': 128,   
-                              'voxel_size': 64} # trimodal ablations - voxel size
+                              'voxel_size': 64} 
         settings.append(setting)
 
-    elif args.param_id == 1:
+    elif args.expr_id == "v64b128":
         setting = {}
         setting['batch_size'] = 128 
         setting['model'] = {'use_voxel': True,
-                            'tri_modal': True,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128,
-                              'voxel_size': 128} # trimodal ablations - voxel size
-        settings.append(setting)
-    
-    ################### voxel ablations   ###############
-    elif args.param_id == 2: 
-        setting = {}
-        setting['batch_size'] = 32 # voxel ablations - batch size
-        setting['model'] = {'use_voxel': True,
                             'tri_modal': False,
                             'num_images': 6,
                             'image_cnn': 'resnet18',
                             'pretraining': True}
         setting['dataset'] = {'image_size': 128,
-                              'voxel_size': 64}
+                              'voxel_size': 64} 
         settings.append(setting)
     
-    elif args.param_id == 3: 
+    elif args.expr_id == "i128b128": 
         setting = {}
-        setting['batch_size'] = 64 # voxel ablations - batch size
-        setting['model'] = {'use_voxel': True,
+        setting['batch_size'] = 128
+        setting['model'] = {'use_voxel': False,
                             'tri_modal': False,
                             'num_images': 6,
                             'image_cnn': 'resnet18',
@@ -114,104 +100,43 @@ if __name__ == "__main__":
         setting['dataset'] = {'image_size': 128,
                               'voxel_size': 64}
         settings.append(setting)
-    
-    elif args.param_id == 4: 
-        setting = {}
-        setting['batch_size'] = 128 # voxel ablations - batch size
-        setting['model'] = {'use_voxel': True,
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128,
-                              'voxel_size': 64}
-        settings.append(setting)
-    
-    elif args.param_id == 5: 
-        setting = {}
-        setting['batch_size'] = 256 # voxel ablations - batch size
-        setting['model'] = {'use_voxel': True,
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 64}
-        settings.append(setting)
 
-    elif args.param_id == 6: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': True,
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 32} # voxel ablations - voxel size
-        settings.append(setting)
-    
-    elif args.param_id == 7: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': True,
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 64} # voxel ablations - voxel size
-        settings.append(setting)
-    
-    elif args.param_id == 8: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': True,
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 128} # voxel ablations - voxel size
-        settings.append(setting)
-
-    ################### triplet ablations   ###############
-    elif args.param_id == 9: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['epochs'] = 40
-        setting['model'] = {'use_voxel': True, # bimodal, voxel
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 64}
-        setting['loss'] = {'type': 'triplet'}
-
-        settings.append(setting)
-    
-    elif args.param_id == 10: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['epochs'] = 40
-        setting['model'] = {'use_voxel': False, # bimodal, image
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128, 
-                              'voxel_size': 64}
-        setting['loss'] = {'type': 'triplet'}
-
-        settings.append(setting)
-    
-    elif args.param_id == 11: 
+    elif args.expr_id == "tri_v64i128b128": 
         setting = {}
         setting['batch_size'] = 128
         setting['epochs'] = 40
         setting['model'] = {'use_voxel': True, 
-                            'tri_modal': True, # trimodal
+                            'tri_modal': True,
+                            'num_images': 6,
+                            'image_cnn': 'resnet18',
+                            'pretraining': True}
+        setting['dataset'] = {'image_size': 128, 
+                              'voxel_size': 64}
+        setting['loss'] = {'type': 'triplet'}
+
+        settings.append(setting)
+    
+    elif args.expr_id == "tri_v64b128": 
+        setting = {}
+        setting['batch_size'] = 128
+        setting['epochs'] = 40
+        setting['model'] = {'use_voxel': True, 
+                            'tri_modal': False,
+                            'num_images': 6,
+                            'image_cnn': 'resnet18',
+                            'pretraining': True}
+        setting['dataset'] = {'image_size': 128, 
+                              'voxel_size': 64}
+        setting['loss'] = {'type': 'triplet'}
+
+        settings.append(setting)
+    
+    elif args.expr_id == "tri_i128b128": 
+        setting = {}
+        setting['batch_size'] = 128
+        setting['epochs'] = 40
+        setting['model'] = {'use_voxel': False, 
+                            'tri_modal': False,
                             'num_images': 6,
                             'image_cnn': 'resnet18',
                             'pretraining': True}
@@ -221,42 +146,6 @@ if __name__ == "__main__":
 
         settings.append(setting)
 
-    ################### images ablations   ###############
-    elif args.param_id == 14: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': False, 
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 64,  # image ablations - image size
-                              'voxel_size': 64}
-        settings.append(setting)
-    
-    elif args.param_id == 15: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': False, 
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 128,  # image ablations - image size
-                              'voxel_size': 64}
-        settings.append(setting)
-    
-    elif args.param_id == 16: 
-        setting = {}
-        setting['batch_size'] = 128
-        setting['model'] = {'use_voxel': False, 
-                            'tri_modal': False,
-                            'num_images': 6,
-                            'image_cnn': 'resnet18',
-                            'pretraining': True}
-        setting['dataset'] = {'image_size': 224,  # image ablations - image size
-                              'voxel_size': 64}
-        settings.append(setting)
 
     for setting in settings:
         main(setting)
