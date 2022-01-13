@@ -12,7 +12,7 @@ We achieved SoTA on text to shape retrieval task and we hope our results will en
 - Ubuntu 20.04.2
 - GeForce RTX 2080 Ti
 - CUDA 11.2
-- Python 3.7
+- Python 3.8
 - Pytorch 1.10.1
 
 ### Setup
