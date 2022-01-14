@@ -32,9 +32,12 @@ To install Pytorch3d, please follow instructions in [pytorch3d/INSTALL.md](https
 
 ## Dataset
 
-- [Text2shape Dataset](http://text2shape.stanford.edu/). It provides fine-grained texts and Shapenet voxels among which we use solid voxelization: 64 Resolution.
-- Corresponding Images. They are rendered by a [Blender-based script](https://github.com/panmari/stanford-shapenet-renderer).
-- ShapeNet Dataset [[webpage]](https://shapenet.org/). Note that the terms-of-use for ShapeNet should be signed before downloading it.
+We run our experiments on the "chairs and tables" dataset from [Text2shape](http://text2shape.stanford.edu/), which is subset of [ShapeNet](https://shapenet.org/) model that has been voxelized and annotated with text descriptions. 
+
+To download the dataset, please
+- Sign the terms-of-use for ShapeNet by going to the [ShapeNet webpage](https://shapenet.org/) and registering for access. Please make sure you sigh the terms-of-use for ShapeNet.
+- Download voxelizations and text descriptions from [Text2shape](http://text2shape.stanford.edu/). The Text2Shape project provides multiple descriptions for each shape as well as surface and solid voxelization.  We use solid voxelization at 64x64x64 resolution for our experiments.
+- Download rendered images. They are rendered by a [Blender-based script](https://github.com/panmari/stanford-shapenet-renderer).
 
 Dataset should be put in a folder called `data` under the same directory where this repo is located.
 
