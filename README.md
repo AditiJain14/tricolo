@@ -85,8 +85,13 @@ python tricolo/metrics/compare_meshes.py --prediction_dir logs/retrieval/exp-dat
 
 ### Inference
 
-With pretrained checkpoint, our network can retrieve shapes according to your customized sentence. Details are in `predict.py`
+With pretrained checkpoints, our network can retrieve shapes according to your customized sentence. 
 
+Change the customized sentence in `predict.py` and run the following command to retrieve a matching object:
+```
+python predict.py --customized_sentence circular_table_with_glass
+```
+The predicted object's 2D image and 3D nrrd file would be saved in `path/to/pretrained_checkpoints/predict`. 
 
 ### Visualization
 

@@ -8,7 +8,8 @@ from tricolo.trainers.SimCLR import SimCLR
 from tricolo.dataloader.dataset_wrapper import DataSetWrapper
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--config_file", default='tricolo/configs/retrieval_shapenet.yaml', type=str, help="Path to config file")
+parser.add_argument("--load_dir", default="logs/retrieval/v64i128b128/Nov05_07-16-16-0", type=str, help="Path to checkpoint file")
+parser.add_argument("--customized_sentence", default="circular_table_with_glass", type=str, help="Your customized sentence")
 args = parser.parse_args()
 
 
@@ -30,10 +31,8 @@ def main(load_dir, customized_sentence):
 # Nov09_21-45-44_Cfg0_GPU0 are b128v64i128
 
 if __name__ == "__main__":
-    load_dir = 'logs/retrieval/v64i128b128/Nov05_07-16-16-0'
-    customized_sentence = "circular table with glass" # Change here as you want
-
-    main(load_dir, customized_sentence)
+    sen = args.customized_sentence.split("_").join(" ")
+    main(args.load_dir, sen)
     torch.cuda.empty_cache()
     
     # The retrieved shape would be stored in load_dir 

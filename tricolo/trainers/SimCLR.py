@@ -422,3 +422,4 @@ class SimCLR(object):
             nrrd_path = os.path.join(self.config["dataset"]["voxel_root_dir"], retrieved_modelid, retrieved_modelid+'.nrrd')
             img_path = os.path.join(self.config["dataset"]["voxel_root_dir"], retrieved_modelid, retrieved_modelid+'.png')
             shutil.copyfile(img_path, os.path.join(predict_folder, retrieved_modelid+'.png'))
+            shutil.copyfile(nrrd_path, os.path.join(predict_folder, retrieved_modelid+'.nrrd'))

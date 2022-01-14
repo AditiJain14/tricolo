@@ -12,8 +12,8 @@ def get_voxel_file(dataset, category, model_id):
             model_id.
     """
     if dataset == 'shapenet':  # ShapeNet dataset
-        return os.path.join("../data/retrieval/shapenet/nrrd_256_filter_div_64_solid", model_id, model_id+'.nrrd')
+        return os.path.join("../nrrd_256_filter_div_64_solid", model_id, model_id+'.nrrd')
     elif dataset == 'primitives':  # Primitives dataset
-        return os.path.join("../data/retrieval/primitives/nrrd_32_solid", category, model_id+'.nrrd')
+        return os.path.join("../nrrd_32_solid", category, model_id+'.nrrd')
     else:
         raise ValueError('Please choose a valid dataset (shapenet, primitives).')

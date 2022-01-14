@@ -25,7 +25,7 @@ def get_pure_caption(caption):
     return " ".join(words[:i+1])
 
 def image_html(shape_dir, model_id):
-    image_path = os.path.join('../data/retrieval/shapenet/nrrd_256_filter_div_64_solid', model_id, model_id+'.png')
+    image_path = os.path.join('../data/nrrd_256_filter_div_64_solid', model_id, model_id+'.png')
     assert os.path.exists(image_path), f"picture doesn't exist! {image_path}"
     destination = os.path.join(args.root_dir, shape_dir, model_id+'.png')
     shutil.copy(image_path, destination)

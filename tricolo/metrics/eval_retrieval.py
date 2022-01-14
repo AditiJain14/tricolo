@@ -310,17 +310,15 @@ def print_nearest_info(dataset, query_model_ids, nearest_model_ids, query_senten
     os.makedirs(render_dir)
     print("render dir is ", render_dir)
 
-    num_queries = 50 # TODO: choose accroding to reciprocal rank. Use as visualization in paper
+    num_queries = 20 # TODO: choose accroding to reciprocal rank. Use as visualization in paper
     assert len(nearest_model_ids) > num_queries
-    # perm = np.random.permutation(len(nearest_model_ids))
-    cnt = 0
+    perm = np.random.permutation(len(nearest_model_ids))
+    # cnt = 0
 
     jsonl_writer = jsonlines.open(os.path.join(render_dir,'nearest.jsonl'), mode='w')
 
-    # for i in perm[:num_queries]:
-    for i in range(len(nearest_model_ids)):
-    # for i in range(9):
-    # for i in perm:
+    for i in perm[:num_queries]:
+    # for i in range(len(nearest_model_ids)):
         query_model_id = query_model_ids[i]
         distance = distances[i]
         nearest = nearest_model_ids[i]
