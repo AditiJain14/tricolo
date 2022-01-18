@@ -37,9 +37,11 @@ We run our experiments on the "chairs and tables" dataset from [Text2shape](http
 To download the dataset, please
 - Sign the terms-of-use for ShapeNet by going to the [ShapeNet webpage](https://shapenet.org/) and registering for access. Please make sure you sigh the terms-of-use for ShapeNet.
 - Download voxelizations and text descriptions from [Text2shape](http://text2shape.stanford.edu/). The Text2Shape project provides multiple descriptions for each shape as well as surface and solid voxelization.  We use solid voxelization at 64x64x64 resolution for our experiments.
-- Download rendered images. They are rendered by a [Blender-based script](https://github.com/panmari/stanford-shapenet-renderer).
+- Download rendered images. They are rendered by a [Blender-based script].
 
 Dataset should be put in a folder called `data` under the same directory where this repo is located.
+
+To obtain the processed data for our code, run `scripts/run_render.py` to render voxels and `scripts/gen_all_npz.py` to get combined voxels and images.
 
 ## Training 
 
@@ -135,6 +137,7 @@ The number of parameters and taken GPU Memory for each variant of model is liste
         </tr>
     </tbody>
 </table>
+
 ## Evaluation
 
 To evaluate the model on different data splits, run the following command with `--validate` (on validation set) or `--test` (on test set).

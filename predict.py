@@ -31,7 +31,7 @@ def main(load_dir, customized_sentence):
 # Nov09_21-45-44_Cfg0_GPU0 are b128v64i128
 
 if __name__ == "__main__":
-    sen = args.customized_sentence.split("_").join(" ")
+    sen = " ".join(args.customized_sentence.split("_"))
     main(args.load_dir, sen)
     torch.cuda.empty_cache()
     
