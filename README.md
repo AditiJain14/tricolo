@@ -7,15 +7,15 @@ We achieved SoTA on text to shape retrieval task and we hope our results will en
 
 ## Usage
 
-### Prerequisites
+### Setup
+
+We test our code on:
 
 - Ubuntu 20.04.2
 - GeForce RTX 2080 Ti
 - CUDA 11.2
 - Python 3.8
 - Pytorch 1.10.1
-
-### Setup
 
 To install basic packages for this repo, run the following command.
 
@@ -57,7 +57,84 @@ The following `expr_id` can be chosen:
 - i128b128: Bimodal(I) experiment with image size 128, batch size 128
 - tri_*: similar meaning but use triplet loss
 
+The number of parameters and taken GPU Memory for each variant of model is listed in the following table.
 
+<table>
+    <thead>
+        <tr>
+            <th>Model</th>
+            <th>#Params</th>
+            <th>Resolution</th>
+            <th>BatchSize</th>
+            <th>Memory</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan=5>Bi(V)</td>
+            <td rowspan=5>8.7 M</td>
+            <td>32<sup>3</sup></td>
+            <td>128</td>
+            <td>2.1 GB</td>
+        </tr>
+        <tr>
+            <td rowspan=4>64<sup>3</sup></td>
+             <td>32</td>
+             <td>2.8 GB</td>
+        </tr>
+        <tr>
+            <td >64</td>
+            <td>5.7 GB</td>
+        </tr>
+        <tr>
+            <td >128</td>
+            <td>10.2 GB</td>
+        </tr>
+        <tr>
+            <td >256</td>
+            <td>21.6 GB</td>
+        </tr>
+        <tr>
+            <td rowspan=7>Bi(I)</td>
+            <td rowspan=5>13.3 M</td>
+            <td>64<sup>2</sup></td>
+            <td rowspan=3>128</td>
+            <td>3.3 GB</td>
+        </tr>
+        <tr>
+            <td>128<sup>2</sup></td>
+            <td>9.5 GB</td>
+        </tr>
+        <tr>
+            <td >224<sup>2</sup></td>
+            <td>25.7 GB</td>
+        </tr>
+        <tr>
+            <td rowspan=4>128<sup>2</sup></td>
+            <td>32</td>
+            <td>3.0 GB</td>
+        </tr>
+        <tr>
+            <td >64</td>
+            <td>6.6 GB</td>
+        </tr>
+        <tr>
+            <td >128</td>
+            <td>9.5 GB</td>
+        </tr>
+        <tr>
+            <td >256</td>
+            <td>15.3 GB</td>
+        </tr>
+        <tr>
+            <td>Tri(I+V)</td>
+            <td>20.6 M</td>
+            <td>v64<sup>3</sup>i128<sup>2</sup></td>
+            <td>128</td>
+            <td>17.0 GB</td>
+        </tr>
+    </tbody>
+</table>
 ## Evaluation
 
 To evaluate the model on different data splits, run the following command with `--validate` (on validation set) or `--test` (on test set).
