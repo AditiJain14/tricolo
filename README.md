@@ -96,7 +96,7 @@ The number of parameters and taken GPU Memory for each variant of model is liste
         </tr>
         <tr>
             <td rowspan=7>Bi(I)</td>
-            <td rowspan=5>13.3 M</td>
+            <td rowspan=7>13.3 M</td>
             <td>64<sup>2</sup></td>
             <td rowspan=3>128</td>
             <td>3.3 GB</td>
