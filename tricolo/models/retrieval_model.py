@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from tricolo.models.models import cnn_encoder, cnn_encoder32, SVCNN, MVCNN 
 
 class ModelCLR(nn.Module):
-    def __init__(self, dset, bert_base_model, out_dim, sparse_model, use_voxel, tri_modal, num_images, image_cnn, pretraining):
+    def __init__(self, dset, out_dim, sparse_model, use_voxel, tri_modal, num_images, image_cnn, pretraining):
         super(ModelCLR, self).__init__()
 
         self.ef_dim = 32
@@ -19,7 +19,7 @@ class ModelCLR(nn.Module):
         self.pretraining = pretraining
         self.sparse_model = sparse_model
 
-        self.bert_model = self._get_bert_basemodel(bert_base_model)
+        self.text_model = self._get_text_basemodel()
 
         self.voxel_model, self.voxel_fc, self.image_model, self.image_fc = self._get_res_basemodel()
 
@@ -73,9 +73,8 @@ class ModelCLR(nn.Module):
             raise('Implement Other Dataset')
         return voxel_model, voxel_fc, image_model, image_fc
 
-    def _get_bert_basemodel(self, bert_model_name):
+    def _get_text_basemodel(self):
         model = nn.GRU(input_size=256, hidden_size=128, num_layers=1, bidirectional=True) 
-        print("Text feature extractor:", bert_model_name)
         return model
 
     
@@ -112,8 +111,8 @@ class ModelCLR(nn.Module):
         h0 = torch.zeros(2, N, 128).cuda()
         # h0 = torch.randn(2, N, 128).cuda()
 
-        self.bert_model.flatten_parameters() # Handle this problem: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greately increasing memory usage. 
-        output, hidden = self.bert_model(embed_inputs, h0) # hn: (D*layer, N, Hout), (2, N, 128)
+        self.text_model.flatten_parameters() # Handle this problem: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greately increasing memory usage. 
+        output, hidden = self.text_model(embed_inputs, h0) # hn: (D*layer, N, Hout), (2, N, 128)
         # concate hidden in two directions (N, 128*2)
         out_emb = torch.tanh(self.fc(torch.cat((hidden[-2,:,:], hidden[-1,:,:]), dim = 1))) # (N, 256)
 

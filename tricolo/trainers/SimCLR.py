@@ -291,10 +291,7 @@ class SimCLR(object):
                     image_features = torch.mean(image_features, 1)
                     text_features = self.clip_model.encode_text(text)
 
-                if self.config["model"]["bert_base_model"]=="bert-base-uncased":
-                    xls = self.tokenizer(list(xls), return_tensors="pt", padding=True, truncation=self.truncation)
-                if self.config["model"]["bert_base_model"]=="BiGRU":
-                    xls = arrays
+                xls = arrays
                 xls = xls.to(self.device)
 
                 shape_embeds.append(image_features.detach().cpu().numpy())
@@ -302,10 +299,8 @@ class SimCLR(object):
                 modelids.extend(list(modelid))
                 category_list.extend(list(categories))
 
-                if self.config["model"]["bert_base_model"]=="bert-base-uncased":
-                    caption_indices = xls['input_ids'].detach().cpu().numpy()
-                if self.config["model"]["bert_base_model"]=="BiGRU":
-                    caption_indices = arrays.detach().cpu().numpy()
+
+                caption_indices = arrays.detach().cpu().numpy()
                 
                 for cap in caption_indices:
                     all_caption_indices.append(cap)
