@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from tricolo.models.models import cnn_encoder, cnn_encoder32, SVCNN, MVCNN 
 
 class ModelCLR(nn.Module):
-    def __init__(self, dset, out_dim, sparse_model, use_voxel, tri_modal, num_images, image_cnn, pretraining):
+    def __init__(self, dset, out_dim, sparse_model, use_voxel, tri_modal, num_images, image_cnn, pretraining, vocab_size):
         super(ModelCLR, self).__init__()
 
         self.ef_dim = 32
@@ -23,7 +23,7 @@ class ModelCLR(nn.Module):
 
         self.voxel_model, self.voxel_fc, self.image_model, self.image_fc = self._get_res_basemodel()
 
-        self.embedding_layer = nn.Embedding(3588, 256, padding_idx=0)
+        self.embedding_layer = nn.Embedding(vocab_size, 256, padding_idx=0) 
         self.fc = nn.Linear(256, out_dim)
 
     def _get_res_basemodel(self):

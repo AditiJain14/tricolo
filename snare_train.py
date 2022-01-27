@@ -4,13 +4,18 @@ import numpy as np
 
 import torch
 
-from tricolo.trainers.SimCLR import SimCLR
-from tricolo.dataloader.dataset_wrapper import DataSetWrapper
+from tricolo.trainers.SimCLR_snare import SimCLR
+from tricolo.dataloader.dataset_wrapper import DataSetWrapper_snare
+
+import os
+os.environ["CUDA_LAUNCH_BLOCKING"] = "1"
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--config_file", default='tricolo/configs/retrieval_shapenet.yaml', type=str, help="Path to config file")
-parser.add_argument("--expr_id", dest='expr_id', default="v64i128b128", type=str, help="specify which experiment you want to run")
+parser.add_argument("--config_file", default='tricolo/configs/retrieval_snare.yaml', type=str, help="Path to config file")
+parser.add_argument("--expr_id", dest='expr_id', default='snare_img', type=str, help="specify which experiment you want to run")
+parser.add_argument("--log_dir", dest='log_dir', default=None, type=str, help="specify training from which checkpoint") 
+# logs/retrieval/Jan26_00-55-15_CFG_snare_img
 args = parser.parse_args()
 
 def _merge_a_into_b(a, b):
@@ -55,8 +60,11 @@ def main(setting=None):
     config['learning_rate'] = str((config['batch_size'] / 32) * base_lr)
     print(config['batch_size'])
     print(eval(config['learning_rate']))
+    
+    if args.log_dir:
+        config["log_dir"] = args.log_dir
 
-    dataset = DataSetWrapper(config['dset'], config['batch_size'], config['train'], **config['dataset'])
+    dataset = DataSetWrapper_snare(config['batch_size'], config['train'], **config['dataset'])
     simclr = SimCLR(dataset, config, args.expr_id)
 
     simclr.train()
@@ -67,7 +75,7 @@ if __name__ == "__main__":
 
     if args.expr_id == "v64i128b128":
         setting = {}
-        setting['batch_size'] = 2 # TODO: 128
+        setting['batch_size'] = 128
         setting['model'] = {'use_voxel': True,
                             'tri_modal': True,
                             'num_images': 6,
@@ -149,15 +157,15 @@ if __name__ == "__main__":
     elif args.expr_id == "snare_img": 
         setting = {}
         setting['batch_size'] = 128
-        setting['epochs'] = 40
+        setting['epochs'] = 100
         setting['model'] = {'use_voxel': False, 
                             'tri_modal': False,
-                            'num_images': 6,
+                            'num_images': 8,
                             'image_cnn': 'resnet18',
                             'pretraining': True}
         setting['dataset'] = {'image_size': 128, 
                               'voxel_size': 64}
-        setting['loss'] = {'type': 'triplet'}
+        setting['loss'] = {'type': 'ntxent'}
 
         settings.append(setting)
 

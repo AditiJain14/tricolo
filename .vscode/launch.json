@@ -11,6 +11,16 @@
             "program": "${file}",
             "console": "integratedTerminal"
         },
+
+        {
+            "name": "snare_train",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/snare_train.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": [] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
+        },
         
         {
             "name": "eval_retrieval",
@@ -19,7 +29,7 @@
             "program": "${workspaceFolder}/run_retrieval_val.py",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "args": [],
+            "args": ["--validate"],
         }
     ]
 }

@@ -1,5 +1,5 @@
 train: True # change
-batch_size: 128 # change
+batch_size: 64 # change
 epochs: 30
 eval_every_n_epochs: 2
 log_every_n_steps: 200
@@ -7,27 +7,28 @@ learning_rate: 4e-4 # change 8e-4
 weight_decay: 1e-6
 dset: shapenet
 CLIP: False
-info: "../data/text2shape-data"
+info: "../data/snare/amt/processed_json/info.json"
+log_dir: None
 
 model:
   out_dim: 512
   sparse_model: False
   use_voxel: False
   tri_modal: False
-  num_images: 12
+  num_images: 8
   image_cnn: 'resnet18'
   pretraining: True
-  vocab_size: 3588
+  vocab_size: 6568
 
 dataset:
   num_workers: 4 # change
-  train_json_file: "../data/train_map.jsonl"
-  val_json_file: "../data/val_map.jsonl"
-  test_json_file: "../data/test_map.jsonl"
+  train_json_file: "../data/snare/amt/processed_json/processed_train.json"
+  val_json_file: "../data/snare/amt/processed_json/processed_val.json"
+  test_json_file: "../data/snare/amt/processed_json/processed_test.json"
   voxel_root_dir: '../data/shapenet/nrrd_256_filter_div_64_solid'
+  img_root_dir: "../data/snare/shapenet-sem/screenshots"
   image_size: 128
   voxel_size: 64
-  transform: 0 # the probability to do data augmentation, 0: no augmentation
 
 
 loss:
