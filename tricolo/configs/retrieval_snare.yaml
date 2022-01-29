@@ -25,7 +25,7 @@ dataset:
   train_json_file: "../data/snare/amt/processed_json/processed_train.json"
   val_json_file: "../data/snare/amt/processed_json/processed_val.json"
   test_json_file: "../data/snare/amt/processed_json/processed_test.json"
-  voxel_root_dir: '../data/shapenet/nrrd_256_filter_div_64_solid'
+  voxel_root_dir: '../data/snare/solid_64' # 128
   img_root_dir: "../data/snare/shapenet-sem/screenshots"
   image_size: 128
   voxel_size: 64

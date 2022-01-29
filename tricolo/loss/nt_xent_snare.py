@@ -17,7 +17,8 @@ class NTXentLoss(torch.nn.Module):
         From the pytorch discussion Forum:
         https://discuss.pytorch.org/t/soft-cross-entropy-loss-tf-has-it-does-pytorch-have-it/69501 
         """
-        logits = logits.reshape(1, -1)
+        if logits.shape[1] == 1:
+            logits = logits.reshape(1, -1)
         logprobs = torch.nn.functional.log_softmax(logits, dim = 1)
         loss = -(target * logprobs).sum() / logits.shape[0]
         return loss
@@ -26,6 +27,7 @@ class NTXentLoss(torch.nn.Module):
     def forward(self, zis, zjs, labels,
                     norm=True,
                     weights=1.0):
+
         temperature = self.temperature
         alpha = self.alpha_weight
 
@@ -47,56 +49,3 @@ class NTXentLoss(torch.nn.Module):
         return loss_b
 
 
-
-class NTXentLoss_neg(torch.nn.Module):
-    '''
-    Source https://github.com/joshr17/HCL/blob/main/image/main.py
-    '''
-    def __init__(self, device, batch_size, temperature, tau_plus, beta, estimator):
-        super(NTXentLoss_neg, self).__init__()
-        self.batch_size = batch_size
-        self.temperature = temperature
-        self.tau_plus = tau_plus
-        self.beta = beta
-        self.estimator = estimator
-        self.device = device
-    
-    def get_negative_mask(self):
-        negative_mask = torch.ones((self.batch_size, 2 * self.batch_size), dtype=bool)
-        for i in range(self.batch_size):
-            negative_mask[i, i] = 0
-            negative_mask[i, i + self.batch_size] = 0
-
-        negative_mask = torch.cat((negative_mask, negative_mask), 0)
-        return negative_mask
-    
-    
-    def forward(self, out_1, out_2):
-        # neg score
-        out = torch.cat([out_1, out_2], dim=0)
-        neg = torch.exp(torch.mm(out, out.t().contiguous()) / self.temperature)
-        old_neg = neg.clone()
-        mask = self.get_negative_mask().to(self.device)
-        neg = neg.masked_select(mask).view(2 * self.batch_size, -1)
-
-        # pos score
-        pos = torch.exp(torch.sum(out_1 * out_2, dim=-1) / self.temperature)
-        pos = torch.cat([pos, pos], dim=0)
-        
-        # negative samples similarity scoring
-        if self.estimator=='hard':
-            N = self.batch_size * 2 - 2
-            imp = (self.beta* neg.log()).exp()
-            reweight_neg = (imp*neg).sum(dim = -1) / imp.mean(dim = -1)
-            Ng = (-self.tau_plus * N * pos + reweight_neg) / (1 - self.tau_plus)
-            # constrain (optional)
-            Ng = torch.clamp(Ng, min = N * np.e**(-1 / self.temperature))
-        elif self.estimator=='easy':
-            Ng = neg.sum(dim=-1)
-        else:
-            raise Exception('Invalid estimator selected. Please use any of [hard, easy]')
-            
-        # contrastive loss
-        loss = (- torch.log(pos / (pos + Ng) )).mean()
-
-        return loss

@@ -1,7 +1,7 @@
 from torch.utils.data import DataLoader
 from torch.utils.data._utils.collate import default_collate
 
-from tricolo.dataloader.dataset import ClrDataset, SnareTrainDataset, SnareValDataset
+from tricolo.dataloader.dataset import ClrDataset, SnareBatchDataset, SnarePairDataset
 
 def backup_collate_fn(batch):
     data = default_collate([item for item in batch])
@@ -14,17 +14,17 @@ def collate_fn(batch):
 
     return model_id, voxels, category, arrays, images
 
-def collate_fn_snare_train(batch):
+def collate_fn_snare_batch(batch):
     data = default_collate([item for item in batch])
-    labels, arrays, images = data
+    labels, arrays, images, voxels = data
 
-    return labels, arrays, images.squeeze().float()
+    return labels, arrays, images.squeeze().float(), voxels.squeeze().float()
 
-def collate_fn_snare_val(batch):
+def collate_fn_snare_pair(batch):
     data = default_collate([item for item in batch])
-    entry_ids, arrays, images, images_2 = data
+    entry_ids, arrays, images_1, images_2, voxels_1, voxels_2 = data
 
-    return entry_ids, arrays, images, images_2
+    return entry_ids, arrays, images_1, images_2, voxels_1.float(), voxels_2.float()
 
 class DataSetWrapper(object):
     def __init__(self, dset, batch_size, stage, num_workers,  train_json_file, val_json_file, test_json_file, voxel_root_dir, image_size, voxel_size, transform):
@@ -70,16 +70,16 @@ class DataSetWrapper_snare(object):
         self.voxel_size = voxel_size
     
     def get_data_loaders(self): 
-        train_dataset = SnareTrainDataset(stage='train', batch_size=self.batch_size, json_file=self.train_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
-        valid_dataset = SnareValDataset(stage='valid', batch_size=self.batch_size, json_file=self.val_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
-        # TODO:
-        test_dataset = SnareTrainDataset(stage='test', batch_size=self.batch_size, json_file=self.test_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
+        #TODO: json_file
+        train_dataset = SnareBatchDataset(stage='train', batch_size=self.batch_size, json_file=self.train_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
+        valid_dataset = SnarePairDataset(stage='valid', batch_size=self.batch_size, json_file=self.val_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
+        test_dataset = SnarePairDataset(stage='test', batch_size=self.batch_size, json_file=self.test_file, voxel_root_dir=self.voxel_root_dir, img_root_dir=self.img_root_dir, image_size=self.image_size, voxel_size = self.voxel_size)
 
         train_loader, valid_loader, test_loader = self.get_train_val_test_data_loaders(train_dataset, valid_dataset, test_dataset)
         return train_loader, valid_loader, test_loader
 
     def get_train_val_test_data_loaders(self, train_dataset, valid_dataset, test_dataset):
-        train_loader = DataLoader(train_dataset, collate_fn=collate_fn_snare_train, batch_size=1, num_workers=self.num_workers, drop_last=True, shuffle=True)
-        valid_loader = DataLoader(valid_dataset, collate_fn=collate_fn_snare_val, batch_size=self.batch_size, num_workers=self.num_workers, drop_last=True, shuffle=True)
-        test_loader = DataLoader(test_dataset, collate_fn=collate_fn_snare_train, batch_size=1, num_workers=self.num_workers, drop_last=False, shuffle=True)
+        train_loader = DataLoader(train_dataset, collate_fn=collate_fn_snare_batch, batch_size=1, num_workers=self.num_workers, drop_last=True, shuffle=True)
+        valid_loader = DataLoader(valid_dataset, collate_fn=collate_fn_snare_pair, batch_size=self.batch_size, num_workers=self.num_workers, drop_last=True, shuffle=True)
+        test_loader = DataLoader(test_dataset, collate_fn=collate_fn_snare_pair, batch_size=self.batch_size, num_workers=self.num_workers, drop_last=False, shuffle=True)
         return train_loader, valid_loader, test_loader

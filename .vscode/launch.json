@@ -19,7 +19,7 @@
             "program": "${workspaceFolder}/snare_train.py",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "args": [] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
+            "args": ["--expr_id", "snare_tri"] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
         },
         
         {
