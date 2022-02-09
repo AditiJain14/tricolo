@@ -65,6 +65,7 @@ def main(setting=None):
     if args.log_dir:
         config["log_dir"] = args.log_dir
     config["train_method"] = "batch"
+    config["expr_id"] = args.expr_id
 
     dataset = DataSetWrapper_snare(config['batch_size'], config['train'], **config['dataset'])
     simclr = SimCLR(dataset, config, args.expr_id)
@@ -158,8 +159,8 @@ if __name__ == "__main__":
     
     elif args.expr_id == "snare_img": # Choose all views
         setting = {}
-        setting['batch_size'] = 64
-        setting['epochs'] = 100
+        setting['batch_size'] = 12
+        setting['epochs'] = 17
         setting['model'] = {'use_voxel': False, 
                             'tri_modal': False,
                             'num_images': 8,
@@ -174,7 +175,7 @@ if __name__ == "__main__":
     elif args.expr_id == "snare_img_1": # Choose one views
         setting = {}
         setting['batch_size'] = 12
-        setting['epochs'] = 50
+        setting['epochs'] = 25
         setting['model'] = {'use_voxel': False, 
                             'tri_modal': False,
                             'num_images': 1,
@@ -204,7 +205,7 @@ if __name__ == "__main__":
     elif args.expr_id == "snare_img_2": # Choose two views
         setting = {}
         setting['batch_size'] = 12
-        setting['epochs'] = 50
+        setting['epochs'] = 25
         setting['model'] = {'use_voxel': False, 
                             'tri_modal': False,
                             'num_images': 2,
@@ -216,9 +217,24 @@ if __name__ == "__main__":
 
         settings.append(setting)
     
-    elif args.expr_id == "snare_img_2_128": # Choose two views
+    elif args.expr_id == "snare_img2_b128": # Choose two views
         setting = {}
         setting['batch_size'] = 128
+        setting['epochs'] = 60
+        setting['model'] = {'use_voxel': False, 
+                            'tri_modal': False,
+                            'num_images': 2,
+                            'image_cnn': 'resnet18',
+                            'pretraining': True}
+        setting['dataset'] = {'image_size': 128, 
+                              'voxel_size': 64}
+        setting['loss'] = {'type': 'ntxent'}
+
+        settings.append(setting)
+    
+    elif args.expr_id == "snare_img2_b64": # Choose two views
+        setting = {}
+        setting['batch_size'] = 64
         setting['epochs'] = 50
         setting['model'] = {'use_voxel': False, 
                             'tri_modal': False,
@@ -246,10 +262,40 @@ if __name__ == "__main__":
 
         settings.append(setting)
     
+    elif args.expr_id == "snare_tri_b128": # Choose all views
+        setting = {}
+        setting['batch_size'] = 128
+        setting['epochs'] = 60
+        setting['model'] = {'use_voxel': True, 
+                            'tri_modal': True,
+                            'num_images': 8,
+                            'image_cnn': 'resnet18',
+                            'pretraining': True}
+        setting['dataset'] = {'image_size': 128, 
+                              'voxel_size': 64}
+        setting['loss'] = {'type': 'ntxent'}
+
+        settings.append(setting)
+    
     elif args.expr_id == "snare_vox": 
         setting = {}
         setting['batch_size'] = 12
-        setting['epochs'] = 50
+        setting['epochs'] = 25
+        setting['model'] = {'use_voxel': True, 
+                            'tri_modal': False,
+                            'num_images': 8,
+                            'image_cnn': 'resnet18',
+                            'pretraining': True}
+        setting['dataset'] = {'image_size': 128, 
+                              'voxel_size': 64}
+        setting['loss'] = {'type': 'ntxent'}
+
+        settings.append(setting)
+    
+    elif args.expr_id == "snare_vox_b128": 
+        setting = {}
+        setting['batch_size'] = 128
+        setting['epochs'] = 25
         setting['model'] = {'use_voxel': True, 
                             'tri_modal': False,
                             'num_images': 8,

@@ -1,6 +1,6 @@
 #!/bin/bash
-#SBATCH --job-name=img_v1b128 # (change)
-#SBATCH --gres=gpu:p100:1 # number of gpus per node, p100l:16G (change)
+#SBATCH --job-name=img2_b128 # (change)
+#SBATCH --gres=gpu:v100l:1 # number of gpus per node, p100l:16G (change)
 #SBATCH --cpus-per-task=12
 #SBATCH --nodes=1
 #SBATCH --mem=32000M
@@ -15,4 +15,4 @@ module load StdEnv/2020 python/3.7
 source /home/yuer/projects/rrg-msavva/yuer/envs/py37-torch/bin/activate
 
 
-python snare_train.py --expr_id snare_img_1_128
+python train_snare.py --expr_id snare_img2_b128

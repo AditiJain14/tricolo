@@ -8,7 +8,6 @@ import nrrd
 
 import torch
 from torch.utils.data import Dataset
-from torch.utils.data import DataLoader
 
 class ClrDataset(Dataset):
     def __init__(self, dset, stage, json_file, voxel_root_dir, image_size, voxel_size, transform=None):
@@ -99,23 +98,10 @@ class SnareBatchDataset(Dataset):
         self.image_size = image_size
         self.voxel_size = voxel_size
         self.bs = batch_size
+        self.npz_folder = "../data/snare_npz_aligned"
 
     def __len__(self):
         return len(self.data)
-    
-    def get_images(self, modelid):
-        view_ids = [f"{modelid}-{i}.png" for i in range(6,14)]
-        pre_path = os.path.join(self.img_folder, modelid)
-        img_paths = [os.path.join(pre_path,view_id) for view_id in view_ids]
-        images= []
-        for img_path in img_paths:
-            img = cv.imread(img_path)
-            resize_img = cv.resize(img, (self.image_size, self.image_size))   
-            resize_img = np.array(resize_img).astype(np.float32) / 255.
-            images.append(resize_img)
-        images = np.array(images).transpose(0, 3, 1, 2) # 8， 3， 128， 128
-        
-        return images
     
     
     def __getitem__(self, idx):
@@ -129,9 +115,10 @@ class SnareBatchDataset(Dataset):
         entry_idx = entry['ans']
         modelid = entry['objects'][entry_idx]
         
-        # process TARGET image. original 512 x 512. convert to 224 x 224
-        images = self.get_images(modelid)
-        voxels, _ = nrrd.read(os.path.join(self.vox_folder, modelid, modelid+'.nrrd'))
+        path = os.path.join(self.npz_folder, modelid+".npz")
+        data = np.load(path)
+        images = data['images']
+        voxels = data['voxels']
 
         
         ### Find another self.bs-1 different models
@@ -161,10 +148,12 @@ class SnareBatchDataset(Dataset):
             if i==pos:
                 continue 
             modelid2 = candidates[i]
-            images_2 = self.get_images(modelid2)
-            all_images[i] = images_2
+            path = os.path.join(self.npz_folder, modelid2+".npz")
+            data = np.load(path)
+            images_2 = data['images']
+            voxels_2= data['voxels']
 
-            voxels_2, _ = nrrd.read(os.path.join(self.vox_folder, modelid2, modelid2+'.nrrd'))
+            all_images[i] = images_2
             all_voxels[i] = voxels_2
 
         return label, anno, all_images, all_voxels
@@ -180,30 +169,19 @@ class SnarePairDataset(Dataset):
         self.image_size = image_size
         self.voxel_size = voxel_size
         self.bs = batch_size
-        self.npz_path = "/local-scratch/yuer/projects/snare/snare_npz"
+        self.npz_path = "../data/snare_npz_aligned"
         
 
     def __len__(self):
         return len(self.data)
     
-    def get_images(self, modelid):
-        view_ids = [f"{modelid}-{i}.png" for i in range(6,14)]
-        pre_path = os.path.join(self.img_folder, modelid)
-        img_paths = [os.path.join(pre_path,view_id) for view_id in view_ids]
-        images= []
-        for img_path in img_paths:
-            img = cv.imread(img_path)
-            resize_img = cv.resize(img, (self.image_size, self.image_size))   
-            resize_img = np.array(resize_img).astype(np.float32) / 255.
-            images.append(resize_img)
-        images = np.array(images).transpose(0, 3, 1, 2) # 8， 3， 128， 128
-        return images
     
     def __getitem__(self, idx):
         entry = self.data[idx]
         
         # get text
         anno = np.array(entry['array'])
+        visual = entry['visual']
         
         # Train. (Test doesn't have answers)
         entry_idx = entry['ans'] if 'ans' in entry else -1
@@ -219,22 +197,23 @@ class SnarePairDataset(Dataset):
                 if key2 != key1:
                     break
         
-        # img1_path = os.path.join(self.npz_path, f"{key1}.npz")
-        # images_1 = np.load(img1_path)["images"]
+        img1_path = os.path.join(self.npz_path, f"{key1}.npz")
+        data_1 = np.load(img1_path)
+        images_1 = data_1['images']
+        voxels_1 = data_1['voxels']
 
-        # img2_path = os.path.join(self.npz_path, f"{key2}.npz")
-        # images_2 = np.load(img2_path)["images"]
-        images_1 = self.get_images(str(key1)) # 8,3, 128, 128
-        images_2 = self.get_images(str(key2))
+        img2_path = os.path.join(self.npz_path, f"{key2}.npz")
+        data_2 = np.load(img2_path)
+        images_2 = data_2['images']
+        voxels_2 = data_2['voxels']
         
-        voxels_1, _ = nrrd.read(os.path.join(self.vox_folder, key1, key1+'.nrrd'))
-        voxels_2, _ = nrrd.read(os.path.join(self.vox_folder, key2, key2+'.nrrd'))
         
-        return entry_idx, anno, images_1, images_2, voxels_1, voxels_2
+        
+        return entry_idx, anno, images_1, images_2, voxels_1, voxels_2, visual
 
 
 if __name__ == "__main__":
-    # dset = SnareTrainDataset()
+    # dset = SnarePairDataset()
     # loader = DataLoader(dset, batch_size=16, num_workers=4, drop_last=True, shuffle=True)
     # for anno, image in loader:
     #     print(anno, image.shape)

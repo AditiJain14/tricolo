@@ -22,9 +22,9 @@ def collate_fn_snare_batch(batch):
 
 def collate_fn_snare_pair(batch):
     data = default_collate([item for item in batch])
-    entry_ids, arrays, images_1, images_2, voxels_1, voxels_2 = data
+    entry_ids, arrays, images_1, images_2, voxels_1, voxels_2, visual = data
 
-    return entry_ids, arrays, images_1, images_2, voxels_1.float(), voxels_2.float()
+    return entry_ids, arrays, images_1, images_2, voxels_1.float(), voxels_2.float(), visual
 
 class DataSetWrapper(object):
     def __init__(self, dset, batch_size, stage, num_workers,  train_json_file, val_json_file, test_json_file, voxel_root_dir, image_size, voxel_size, transform):

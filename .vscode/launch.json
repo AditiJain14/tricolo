@@ -13,13 +13,13 @@
         },
 
         {
-            "name": "snare_train",
+            "name": "train_snare",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/snare_train.py",
+            "program": "${workspaceFolder}/train_snare.py",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
-            "args": ["--expr_id", "snare_tri"] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
+            "args": ["--expr_id", "snare_img_1"] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
         },
         
         {
@@ -30,6 +30,26 @@
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal",
             "args": ["--validate"],
-        }
+        },
+
+        {
+            "name": "val_snare",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/val_snare.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": ["--validate"] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
+        },
+
+        {
+            "name": "test_snare",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/val_snare.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal",
+            "args": ["--test"] // ["--log_dir", "logs/retrieval/Jan26_00-55-15_CFG_snare_img"],
+        },
     ]
 }
