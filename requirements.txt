@@ -1,7 +1,7 @@
 h5py==3.6.0
 jsonlines==3.0.0
 matplotlib==3.5.1
-numpy==1.22.0
+numpy==1.21.5
 opencv-python==4.5.5.62
 Pillow==9.0.0
 pynrrd==0.4.2
